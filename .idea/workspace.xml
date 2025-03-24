@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20d08642-c51c-4712-9a7c-2ed5fa426e0a" name="Changes" comment="setup home page ui">
-      <change afterPath="$PROJECT_DIR$/firebase/admin.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/firebase/client.ts" afterDir="false" />
+    <list default="true" id="20d08642-c51c-4712-9a7c-2ed5fa426e0a" name="Changes" comment="install and setup firebase admin and client file">
+      <change afterPath="$PROJECT_DIR$/lib/action/auth.action.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/AuthForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/AuthForm.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +30,7 @@
   }
 }]]></component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -99,7 +97,7 @@
       <workItem from="1742823624825" duration="45000" />
       <workItem from="1742823676015" duration="374000" />
       <workItem from="1742834672696" duration="4785000" />
-      <workItem from="1742839518058" duration="9228000" />
+      <workItem from="1742839518058" duration="11596000" />
     </task>
     <task id="LOCAL-00001" summary="setup the project and the authform">
       <option name="closed" value="true" />
@@ -125,7 +123,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742847534479</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="install and setup firebase admin and client file">
+      <option name="closed" value="true" />
+      <created>1742849096224</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1742849096224</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -134,6 +140,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="setup the project and the authform" />
     <MESSAGE value="setup home page ui" />
-    <option name="LAST_COMMIT_MESSAGE" value="setup home page ui" />
+    <MESSAGE value="install and setup firebase admin and client file" />
+    <option name="LAST_COMMIT_MESSAGE" value="install and setup firebase admin and client file" />
   </component>
 </project>
