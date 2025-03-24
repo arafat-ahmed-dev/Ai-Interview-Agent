@@ -20,7 +20,7 @@ export async function signUp(params: SignUpParams) {
       success: true,
       message: "Account signed up successfully. Please sign in!",
     };
-  } catch (e: any) {
+  } catch (e) {
     console.error("Error creating a user", e);
     if (e.code === "auth/email-already-exists") {
       return {
@@ -68,4 +68,34 @@ export async function setSessionCookie(idToken: string) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
   });
+}
+
+export async function getCurrentUser(): Promise<User | null> {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("session")?.value;
+  if (!sessionCookie) {
+    return null;
+  }
+  try {
+    const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
+    const userRecord = await db
+      .collection("users")
+      .doc(decodedClaims.uid)
+      .get();
+    if (!userRecord) {
+      return null;
+    }
+    return {
+      ...userRecord.data(),
+      id: userRecord.id,
+    } as User;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
+export async function isAuthenticated() {
+  const user = await getCurrentUser();
+  return !!user;
 }
