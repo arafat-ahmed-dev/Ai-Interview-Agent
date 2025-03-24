@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20d08642-c51c-4712-9a7c-2ed5fa426e0a" name="Changes" comment="setup home page ui" />
+    <list default="true" id="20d08642-c51c-4712-9a7c-2ed5fa426e0a" name="Changes" comment="setup home page ui">
+      <change afterPath="$PROJECT_DIR$/firebase/admin.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/firebase/client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,7 +99,7 @@
       <workItem from="1742823624825" duration="45000" />
       <workItem from="1742823676015" duration="374000" />
       <workItem from="1742834672696" duration="4785000" />
-      <workItem from="1742839518058" duration="7788000" />
+      <workItem from="1742839518058" duration="9228000" />
     </task>
     <task id="LOCAL-00001" summary="setup the project and the authform">
       <option name="closed" value="true" />
@@ -111,7 +117,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742847389561</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="setup home page ui">
+      <option name="closed" value="true" />
+      <created>1742847534479</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1742847534479</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
