@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20d08642-c51c-4712-9a7c-2ed5fa426e0a" name="Changes" comment="implement interview generation and generate the question by using gemini and save it in the database">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
+    <list default="true" id="20d08642-c51c-4712-9a7c-2ed5fa426e0a" name="Changes" comment="remove eslint-config-standard eslint-plugin-tailwindcss eslint-config-prettier prettier">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(root)/interview/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(root)/interview/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Agent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Agent.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,7 +100,10 @@
       <workItem from="1742834672696" duration="4785000" />
       <workItem from="1742839518058" duration="13222000" />
       <workItem from="1742883690079" duration="3229000" />
-      <workItem from="1742901372127" duration="2158000" />
+      <workItem from="1742901372127" duration="2626000" />
+      <workItem from="1742908320321" duration="3363000" />
+      <workItem from="1742914737620" duration="1122000" />
+      <workItem from="1742927390047" duration="692000" />
     </task>
     <task id="LOCAL-00001" summary="setup the project and the authform">
       <option name="closed" value="true" />
@@ -166,7 +169,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742903239871</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="eslint config">
+      <option name="closed" value="true" />
+      <created>1742903623937</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1742903623937</updated>
+    </task>
+    <task id="LOCAL-00010" summary="remove eslint-config-standard eslint-plugin-tailwindcss eslint-config-prettier prettier">
+      <option name="closed" value="true" />
+      <created>1742903820702</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1742903820702</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -180,6 +199,8 @@
     <MESSAGE value="protect root route and auth route" />
     <MESSAGE value="implement interview generation page ui" />
     <MESSAGE value="implement interview generation and generate the question by using gemini and save it in the database" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement interview generation and generate the question by using gemini and save it in the database" />
+    <MESSAGE value="eslint config" />
+    <MESSAGE value="remove eslint-config-standard eslint-plugin-tailwindcss eslint-config-prettier prettier" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove eslint-config-standard eslint-plugin-tailwindcss eslint-config-prettier prettier" />
   </component>
 </project>
