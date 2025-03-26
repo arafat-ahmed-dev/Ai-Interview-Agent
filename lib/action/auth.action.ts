@@ -20,7 +20,7 @@ export async function signUp(params: SignUpParams) {
       success: true,
       message: "Account signed up successfully. Please sign in!",
     };
-  } catch (e: never) {
+  } catch (e: any) {
     console.error("Error creating a user", e);
     if (e.code === "auth/email-already-exists") {
       return {
