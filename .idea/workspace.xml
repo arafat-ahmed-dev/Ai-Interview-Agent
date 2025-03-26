@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20d08642-c51c-4712-9a7c-2ed5fa426e0a" name="Changes" comment="remove eslint-config-standard eslint-plugin-tailwindcss eslint-config-prettier prettier">
+    <list default="true" id="20d08642-c51c-4712-9a7c-2ed5fa426e0a" name="Changes" comment="show generated interviews on the homepage">
+      <change afterPath="$PROJECT_DIR$/app/(root)/interview/[id]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/action/general.action.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(root)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(root)/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Agent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Agent.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/InterviewCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/InterviewCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/action/auth.action.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/action/auth.action.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,26 +46,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "js.linters.configure.manually.selectedeslint": "true",
-    "last_opened_file_path": "C:/Users/arafa/Documents/Arafat/ai-interview-agent",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.standard": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "C:\\Users\\arafa\\Documents\\Arafat\\ai-interview-agent\\node_modules\\eslint",
-    "node.js.selected.package.standard": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\arafa\\Documents\\Arafat\\ai-interview-agent\\node_modules\\prettier",
-    "settings.editor.selected.configurable": "settings.javascript.prettier",
-    "ts.external.directory.path": "C:\\Users\\arafa\\Documents\\Arafat\\ai-interview-agent\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;js.linters.configure.manually.selectedeslint&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/arafa/Documents/Arafat/ai-interview-agent&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\ai-interview-agent\\node_modules\\eslint&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\ai-interview-agent\\node_modules\\prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.prettier&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\ai-interview-agent\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -104,7 +108,8 @@
       <workItem from="1742901372127" duration="2626000" />
       <workItem from="1742908320321" duration="3363000" />
       <workItem from="1742914737620" duration="1122000" />
-      <workItem from="1742927390047" duration="3299000" />
+      <workItem from="1742927390047" duration="3364000" />
+      <workItem from="1742977329914" duration="1427000" />
     </task>
     <task id="LOCAL-00001" summary="setup the project and the authform">
       <option name="closed" value="true" />
@@ -186,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742903820702</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="show generated interviews on the homepage">
+      <option name="closed" value="true" />
+      <created>1742930770208</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1742930770208</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,6 +215,7 @@
     <MESSAGE value="implement interview generation and generate the question by using gemini and save it in the database" />
     <MESSAGE value="eslint config" />
     <MESSAGE value="remove eslint-config-standard eslint-plugin-tailwindcss eslint-config-prettier prettier" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove eslint-config-standard eslint-plugin-tailwindcss eslint-config-prettier prettier" />
+    <MESSAGE value="show generated interviews on the homepage" />
+    <option name="LAST_COMMIT_MESSAGE" value="show generated interviews on the homepage" />
   </component>
 </project>
