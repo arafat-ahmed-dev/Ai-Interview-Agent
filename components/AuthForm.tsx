@@ -17,6 +17,28 @@ import {
 import { auth } from "@/firebase/client";
 import { signIn, signUp } from "@/lib/action/auth.action";
 
+function getFriendlyAuthMessage(code?: string, fallback?: string) {
+  switch (code) {
+    case "auth/invalid-credential":
+    case "auth/wrong-password":
+      return "Incorrect email or password. Please try again.";
+    case "auth/user-not-found":
+      return "No account found with that email. Please sign up first.";
+    case "auth/too-many-requests":
+      return "Too many attempts. Please wait a moment and try again.";
+    case "auth/network-request-failed":
+      return "Network error. Check your connection and try again.";
+    case "auth/email-already-in-use":
+      return "That email is already in use. Try signing in instead.";
+    case "auth/weak-password":
+      return "Password should be at least 6 characters.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    default:
+      return fallback || "Something went wrong. Please try again.";
+  }
+}
+
 const authFormSchema = (type: FormType) => {
   return z.object({
     name:
@@ -46,7 +68,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
         const userCredentials = await createUserWithEmailAndPassword(
           auth,
           email,
-          password,
+          password
         );
         const result = await signUp({
           uid: userCredentials.user.uid,
@@ -55,7 +77,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
           password,
         });
         if (!result?.success) {
-          toast.error(result?.message);
+          toast.error(
+            result?.message || "Failed to create account. Please try again."
+          );
           return;
         }
         toast.success("Account created successfully. Please sign in!");
@@ -63,29 +87,38 @@ const AuthForm = ({ type }: { type: FormType }) => {
         console.log("sign-up", values);
       } else {
         const { email, password } = values;
+        console.log("email", email);
+        console.log("password", password);
         const userCredential = await signInWithEmailAndPassword(
           auth,
           email,
-          password,
+          password
         );
+        console.log("userCredential", userCredential);
         const idToken = await userCredential.user.getIdToken();
+        console.log("idToken", idToken);
         if (!idToken) {
           toast.error("Sign in Failed!");
           return;
         }
-        await signIn({
+        console.log("signIn", values);
+        const result = await signIn({
           email,
           idToken,
         });
-        toast.success("Sign in successfully.");
+        if (result && !result.success) {
+          toast.error(result.message || "Failed to sign in. Please try again.");
+          return;
+        }
+        toast.success("Signed in successfully.");
         router.push("/");
         console.log("sign-in", values);
       }
     } catch (e) {
       console.error(e);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      toast.error("Error creating auth form :", e.message);
+      const err = e as { code?: string; message?: string };
+      const friendly = getFriendlyAuthMessage(err?.code, err?.message);
+      toast.error(friendly);
     }
   }
   return (
@@ -139,6 +172,16 @@ const AuthForm = ({ type }: { type: FormType }) => {
             {isSignIn ? "Sign Up" : "Sign In"}
           </Link>
         </p>
+        {isSignIn && (
+          <p className="text-center">
+            <Link
+              href={"/forgot-password"}
+              className="font-bold text-user-primary ml-1"
+            >
+              Forgot Password?
+            </Link>
+          </p>
+        )}
       </div>
     </div>
   );

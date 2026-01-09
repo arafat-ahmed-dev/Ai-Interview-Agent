@@ -20,9 +20,9 @@ export async function signUp(params: SignUpParams) {
       success: true,
       message: "Account signed up successfully. Please sign in!",
     };
-  } catch (e: any) {
+  } catch (e) {
     console.error("Error creating a user", e);
-    if (e.code === "auth/email-already-exists") {
+    if ((e as { code?: string }).code === "auth/email-already-exists") {
       return {
         success: false,
         message:
@@ -52,6 +52,28 @@ export async function signIn(params: SignInParams) {
     return {
       success: false,
       message: "Failed to log into an account.",
+    };
+  }
+}
+
+export async function signOut() {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.set("session", "", {
+      maxAge: 0, // Expire the cookie immediately
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+    return {
+      success: true,
+      message: "Successfully signed out.",
+    };
+  } catch (e) {
+    console.error("Error signing out", e);
+    return {
+      success: false,
+      message: "Failed to sign out.",
     };
   }
 }
@@ -99,3 +121,4 @@ export async function isAuthenticated() {
   const user = await getCurrentUser();
   return !!user;
 }
+

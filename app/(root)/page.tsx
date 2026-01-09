@@ -12,11 +12,13 @@ import { getCurrentUser } from "@/lib/action/auth.action";
 const Page = async () => {
   const user = await getCurrentUser();
   const [userInterviews, latestInterviews] = await Promise.all([
-    await getInterviewsByUserId(user?.id!),
-    await getLatestInterviews({ userId: user?.id! }),
+    user ? await getInterviewsByUserId(user.id) : null,
+    user ? await getLatestInterviews({ userId: user.id }) : null,
   ]);
-  const hasPastInterviews = userInterviews?.length > 0;
-  const upcomingInterviews = latestInterviews?.length > 0;
+  const hasPastInterviews = userInterviews ? userInterviews.length > 0 : false;
+  const upcomingInterviews = latestInterviews ? latestInterviews.length > 0 : false;
+  console.log(userInterviews);
+  
   return (
     <>
       <section className="card-cta">
