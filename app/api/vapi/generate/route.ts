@@ -2,8 +2,36 @@ import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { db } from "@/firebase/admin";
+import { timingSafeEqual } from "crypto";
 
-export async function GET() {
+// Set max duration for Vercel serverless function (adjust based on your plan)
+export const maxDuration = 60; // 60 seconds timeout
+
+const isAuthorized = (request: Request) => {
+  const configuredSecret = process.env.VAPI_GENERATE_SECRET;
+  const providedSecret = request.headers.get("x-vapi-secret");
+
+  if (!configuredSecret || !providedSecret) {
+    return false;
+  }
+
+  const configuredSecretBuffer = Buffer.from(configuredSecret);
+  const providedSecretBuffer = Buffer.from(providedSecret);
+
+  return (
+    configuredSecretBuffer.length === providedSecretBuffer.length &&
+    timingSafeEqual(configuredSecretBuffer, providedSecretBuffer)
+  );
+};
+
+const unauthorizedResponse = () =>
+  Response.json({ success: false, error: "Unauthorized" }, { status: 401 });
+
+export async function GET(request: Request) {
+  if (!isAuthorized(request)) {
+    return unauthorizedResponse();
+  }
+
   return Response.json(
     {
       success: true,
@@ -11,11 +39,25 @@ export async function GET() {
     },
     {
       status: 200,
-    },
+    }
   );
 }
 export async function POST(request: Request) {
+  if (!isAuthorized(request)) {
+    return unauthorizedResponse();
+  }
+
   const { type, role, level, techstack, amount, userId } = await request.json();
+
+  console.log("Generating interview questions...", {
+    type,
+    role,
+    level,
+    techstack,
+    amount,
+    userId,
+  });
+
   try {
     const { text: questions } = await generateText({
       model: google("gemini-2.0-flash-001"),
@@ -31,6 +73,8 @@ export async function POST(request: Request) {
         ["Question 1", "Question 2", "Question 3"]
       `,
     });
+
+    console.log("Questions generated:", questions);
 
     // Validate and sanitize the response
     let parsedQuestions;
@@ -56,10 +100,18 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    await db.collection("interviews").add(interview);
-    return Response.json({ success: true }, { status: 200 });
+    const docRef = await db.collection("interviews").add(interview);
+    console.log("Interview created with ID:", docRef.id);
+
+    return Response.json(
+      { success: true, interviewId: docRef.id },
+      { status: 200 }
+    );
   } catch (e) {
-    console.error(e);
-    return Response.json({ success: false, error: (e as Error).message }, { status: 500 });
+    console.error("Error generating interview:", e);
+    return Response.json(
+      { success: false, error: (e as Error).message },
+      { status: 500 }
+    );
   }
 }

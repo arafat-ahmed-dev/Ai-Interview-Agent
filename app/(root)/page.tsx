@@ -17,7 +17,6 @@ const Page = async () => {
   ]);
   const hasPastInterviews = userInterviews ? userInterviews.length > 0 : false;
   const upcomingInterviews = latestInterviews ? latestInterviews.length > 0 : false;
-  console.log(userInterviews);
   
   return (
     <>

@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
@@ -34,6 +35,8 @@ const Agent = ({
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [lastMessage, setLastMessage] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const generationCompleteRef = useRef(false);
 
   useEffect(() => {
     const onCallStart = () => {
@@ -41,13 +44,44 @@ const Agent = ({
     };
 
     const onCallEnd = () => {
-      setCallStatus(CallStatus.FINISHED);
+      // Only set finished if generation is complete or if it's not a generate type
+      if (type !== "generate" || generationCompleteRef.current) {
+        setCallStatus(CallStatus.FINISHED);
+      } else if (type === "generate" && !generationCompleteRef.current) {
+        // For generate type, if call ended prematurely, show a message
+        console.log("Call ended - checking if generation completed...");
+        // Give a small delay to check if workflow completed successfully
+        setTimeout(() => {
+          if (!generationCompleteRef.current) {
+            toast.info("Processing your interview setup...");
+            setCallStatus(CallStatus.FINISHED);
+          }
+        }, 2000);
+      }
     };
 
     const onMessage = (message: Message) => {
       if (message.type === "transcript" && message.transcriptType === "final") {
         const newMessage = { role: message.role, content: message.transcript };
         setMessages((prev) => [...prev, newMessage]);
+      }
+
+      // Listen for workflow/function completion messages
+      if (message.type === "function-call-result") {
+        console.log("Function call result:", message);
+        const result = message.functionCallResult?.result as { success?: boolean } | undefined;
+        if (result?.success) {
+          generationCompleteRef.current = true;
+          setIsGenerating(false);
+          toast.success("Interview questions generated successfully!");
+        }
+      }
+
+      // Listen for function call to track when generation starts
+      if (message.type === "function-call") {
+        console.log("Function call:", message);
+        setIsGenerating(true);
+        toast.info("Generating your interview questions...");
       }
     };
 
@@ -63,6 +97,8 @@ const Agent = ({
 
     const onError = (error: Error) => {
       console.log("Error:", error);
+      toast.error("An error occurred during the call. Please try again.");
+      setIsGenerating(false);
     };
 
     vapi.on("call-start", onCallStart);
@@ -80,7 +116,7 @@ const Agent = ({
       vapi.off("speech-end", onSpeechEnd);
       vapi.off("error", onError);
     };
-  }, []);
+  }, [type]);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -116,31 +152,42 @@ const Agent = ({
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
+    generationCompleteRef.current = false;
 
-    if (type === "generate") {
-      await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-        variableValues: {
-          username: userName,
-          userid: userId,
-        },
-      });
-    } else {
-      let formattedQuestions = "";
-      if (questions) {
-        formattedQuestions = questions
-          .map((question) => `- ${question}`)
-          .join("\n");
+    try {
+      if (type === "generate") {
+        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+          variableValues: {
+            username: userName,
+            userid: userId,
+          },
+        });
+      } else {
+        let formattedQuestions = "";
+        if (questions) {
+          formattedQuestions = questions
+            .map((question) => `- ${question}`)
+            .join("\n");
+        }
+
+        await vapi.start(interviewer, {
+          variableValues: {
+            questions: formattedQuestions,
+          },
+        });
       }
-
-      await vapi.start(interviewer, {
-        variableValues: {
-          questions: formattedQuestions,
-        },
-      });
+    } catch (error) {
+      console.error("Failed to start call:", error);
+      toast.error("Failed to start the call. Please try again.");
+      setCallStatus(CallStatus.INACTIVE);
     }
   };
 
   const handleDisconnect = () => {
+    if (isGenerating) {
+      toast.warning("Please wait, interview questions are being generated...");
+      return;
+    }
     setCallStatus(CallStatus.FINISHED);
     vapi.stop();
   };
@@ -161,6 +208,11 @@ const Agent = ({
             {isSpeaking && <span className="animate-speak" />}
           </div>
           <h3>AI Interviewer</h3>
+          {isGenerating && (
+            <p className="text-sm text-primary-200 animate-pulse">
+              Generating questions...
+            </p>
+          )}
         </div>
 
         {/* User Profile Card */}

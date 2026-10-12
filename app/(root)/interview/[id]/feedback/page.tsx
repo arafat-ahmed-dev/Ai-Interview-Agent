@@ -16,10 +16,12 @@ const Feedback = async ({ params }: RouteParams) => {
 
   const interview = await getInterviewById(id);
   if (!interview) redirect("/");
+  if (!user) redirect("/sign-in");
+  if (interview.userId !== user.id) redirect("/");
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
-    userId: user?.id!,
+    userId: user.id,
   });
 
   return (

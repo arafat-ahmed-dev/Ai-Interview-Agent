@@ -88,7 +88,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
       } else {
         const { email, password } = values;
         console.log("email", email);
-        console.log("password", password);
         const userCredential = await signInWithEmailAndPassword(
           auth,
           email,
@@ -96,7 +95,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
         );
         console.log("userCredential", userCredential);
         const idToken = await userCredential.user.getIdToken();
-        console.log("idToken", idToken);
         if (!idToken) {
           toast.error("Sign in Failed!");
           return;
@@ -115,7 +113,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
         console.log("sign-in", values);
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
       const err = e as { code?: string; message?: string };
       const friendly = getFriendlyAuthMessage(err?.code, err?.message);
       toast.error(friendly);
