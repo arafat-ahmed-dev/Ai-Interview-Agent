@@ -97,12 +97,16 @@ const Agent = ({
       setIsSpeaking(false);
     };
 
-    const onError = (error: Error | any) => {
+    const onError = (error: unknown) => {
       console.log("Error:", error);
+      const errObj = error as
+        | { message?: string; error?: { message?: string } }
+        | null
+        | undefined;
       const message =
         typeof error === "string"
           ? error
-          : error?.message || error?.error?.message || "";
+          : errObj?.message || errObj?.error?.message || "";
       if (
         message.includes("Meeting has ended") ||
         message.includes("ejection") ||
