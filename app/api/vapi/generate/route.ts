@@ -66,7 +66,7 @@ export async function POST(request: Request) {
 
   try {
     const { object: questions } = await generateObject({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-3.8-flash"),
       schema: z.array(z.string()).describe("List of job interview questions"),
       prompt: `Prepare interview questions for a candidate.
         The job role is ${role}.

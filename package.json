@@ -43,5 +43,8 @@
     "tailwindcss": "^4",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@daily-co/daily-js": "^0.94.0"
   }
 }

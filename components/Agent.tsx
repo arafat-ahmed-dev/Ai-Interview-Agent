@@ -97,8 +97,19 @@ const Agent = ({
       setIsSpeaking(false);
     };
 
-    const onError = (error: Error) => {
+    const onError = (error: Error | any) => {
       console.log("Error:", error);
+      const message =
+        typeof error === "string"
+          ? error
+          : error?.message || error?.error?.message || "";
+      if (
+        message.includes("Meeting has ended") ||
+        message.includes("ejection") ||
+        message.includes("ejected")
+      ) {
+        return;
+      }
       toast.error("An error occurred during the call. Please try again.");
       setIsGenerating(false);
     };
