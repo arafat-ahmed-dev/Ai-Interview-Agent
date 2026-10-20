@@ -20,20 +20,22 @@ const InterviewDetails = async ({ params }: RouteParams) => {
   if (!interview) redirect("/");
 
   if (!user) redirect("/sign-in");
-  if (interview.userId !== user.id) redirect("/");
+  if (!interview.finalized && interview.userId !== user.id) redirect("/");
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
     userId: user.id,
   });
 
+  const coverSrc = interview.coverImage || getRandomInterviewCover();
+
   return (
     <>
-      <div className="flex flex-row gap-4 justify-between">
-        <div className="flex flex-row gap-4 items-center max-sm:flex-col">
+      <div className="flex flex-row gap-4 justify-between items-center">
+        <div className="flex flex-row gap-4 items-center max-sm:flex-col max-sm:items-start">
           <div className="flex flex-row gap-4 items-center">
             <Image
-              src={getRandomInterviewCover()}
+              src={coverSrc}
               alt="cover-image"
               width={40}
               height={40}
@@ -42,10 +44,10 @@ const InterviewDetails = async ({ params }: RouteParams) => {
             <h3 className="capitalize">{interview.role} Interview</h3>
           </div>
 
-          <DisplayTechIcons techStack={interview.techstack} />
+          <DisplayTechIcons techStack={interview.techstack || []} />
         </div>
 
-        <p className="bg-dark-200 px-4 py-2 rounded-lg h-fit">
+        <p className="bg-dark-200 px-4 py-2 rounded-lg h-fit text-sm font-semibold capitalize">
           {interview.type}
         </p>
       </div>

@@ -36,7 +36,9 @@ const Agent = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [lastMessage, setLastMessage] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isAnalyzingFeedback, setIsAnalyzingFeedback] = useState(false);
   const generationCompleteRef = useRef(false);
+  const feedbackProcessingRef = useRef(false);
 
   useEffect(() => {
     const onCallStart = () => {
@@ -123,36 +125,60 @@ const Agent = ({
       setLastMessage(messages[messages.length - 1].content);
     }
 
-    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-      console.log("handleGenerateFeedback");
+    if (callStatus !== CallStatus.FINISHED) return;
 
-      const { success, feedbackId: id } = await createFeedback({
-        interviewId: interviewId!,
-        userId: userId!,
-        transcript: messages,
-        feedbackId,
-      });
+    if (type === "generate") {
+      router.push("/");
+      return;
+    }
 
-      if (success && id) {
-        router.push(`/interview/${interviewId}/feedback`);
-      } else {
-        console.log("Error saving feedback");
+    if (feedbackProcessingRef.current) return;
+    feedbackProcessingRef.current = true;
+
+    if (!messages || messages.length < 2) {
+      toast.info("Interview ended early. Not enough dialogue to evaluate.");
+      router.push("/");
+      return;
+    }
+
+    const processFeedback = async () => {
+      setIsAnalyzingFeedback(true);
+      toast.info("Generating your interview performance report...");
+
+      try {
+        const result = await createFeedback({
+          interviewId: interviewId!,
+          userId: userId!,
+          transcript: messages,
+          feedbackId,
+        });
+
+        if (result.success && result.feedbackId) {
+          toast.success("Interview report ready!");
+          router.push(`/interview/${interviewId}/feedback`);
+        } else {
+          toast.error(
+            (result as { message?: string })?.message ||
+              "Failed to evaluate interview feedback."
+          );
+          router.push("/");
+        }
+      } catch (err) {
+        console.error("Error saving feedback:", err);
+        toast.error("An error occurred while generating your report.");
         router.push("/");
+      } finally {
+        setIsAnalyzingFeedback(false);
       }
     };
 
-    if (callStatus === CallStatus.FINISHED) {
-      if (type === "generate") {
-        router.push("/");
-      } else {
-        handleGenerateFeedback(messages);
-      }
-    }
+    processFeedback();
   }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
     generationCompleteRef.current = false;
+    feedbackProcessingRef.current = false;
 
     try {
       if (type === "generate") {
@@ -246,9 +272,24 @@ const Agent = ({
         </div>
       )}
 
+      {isAnalyzingFeedback && (
+        <div className="card-border w-full">
+          <div className="card p-6 flex flex-col items-center justify-center gap-3">
+            <div className="size-8 border-3 border-primary-200 border-t-transparent rounded-full animate-spin" />
+            <p className="text-primary-100 font-medium animate-pulse text-center">
+              Evaluating your interview responses & calculating score...
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="w-full flex justify-center">
         {callStatus !== "ACTIVE" ? (
-          <button className="relative btn-call" onClick={() => handleCall()}>
+          <button
+            className="relative btn-call"
+            onClick={() => handleCall()}
+            disabled={isAnalyzingFeedback}
+          >
             <span
               className={cn(
                 "absolute animate-ping rounded-full opacity-75",
@@ -257,7 +298,9 @@ const Agent = ({
             />
 
             <span className="relative">
-              {callStatus === "INACTIVE" || callStatus === "FINISHED"
+              {isAnalyzingFeedback
+                ? "Analyzing..."
+                : callStatus === "INACTIVE" || callStatus === "FINISHED"
                 ? "Call"
                 : ". . ."}
             </span>

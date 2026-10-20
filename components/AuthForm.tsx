@@ -61,6 +61,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
     },
   });
 
+  const isSubmitting = form.formState.isSubmitting;
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (type === "sign-up") {
@@ -70,63 +72,73 @@ const AuthForm = ({ type }: { type: FormType }) => {
           email,
           password
         );
+
         const result = await signUp({
           uid: userCredentials.user.uid,
           name: name!,
           email,
           password,
         });
+
         if (!result?.success) {
+          // Rollback created user in Firebase auth to prevent orphaned state
+          try {
+            await userCredentials.user.delete();
+          } catch (deleteErr) {
+            console.error("Failed to rollback auth user:", deleteErr);
+          }
           toast.error(
             result?.message || "Failed to create account. Please try again."
           );
           return;
         }
+
         toast.success("Account created successfully. Please sign in!");
         router.push("/sign-in");
-        console.log("sign-up", values);
       } else {
         const { email, password } = values;
-        console.log("email", email);
         const userCredential = await signInWithEmailAndPassword(
           auth,
           email,
           password
         );
-        console.log("userCredential", userCredential);
+
         const idToken = await userCredential.user.getIdToken();
         if (!idToken) {
-          toast.error("Sign in Failed!");
+          toast.error("Sign in failed. Could not retrieve token.");
           return;
         }
-        console.log("signIn", values);
+
         const result = await signIn({
           email,
           idToken,
         });
+
         if (result && !result.success) {
           toast.error(result.message || "Failed to sign in. Please try again.");
           return;
         }
+
         toast.success("Signed in successfully.");
         router.push("/");
-        console.log("sign-in", values);
+        router.refresh();
       }
     } catch (e) {
-      console.log(e);
+      console.error("Auth error:", e);
       const err = e as { code?: string; message?: string };
       const friendly = getFriendlyAuthMessage(err?.code, err?.message);
       toast.error(friendly);
     }
   }
+
   return (
-    <div className="card-border lg:min-w-[566px]">
+    <div className="card-border lg:min-w-[566px] w-full max-w-lg">
       <div className="flex flex-col gap-6 card py-14 px-10">
-        <div className="flex flex-row gap-2 justify-center">
-          <Image src="/logo.svg" alt="loog" height={32} width={38} />
-          <h2 className="text-primary-100">PreWise</h2>
+        <div className="flex flex-row gap-2 justify-center items-center">
+          <Image src="/logo.svg" alt="logo" height={32} width={38} />
+          <h2 className="text-primary-100">PrepWise</h2>
         </div>
-        <h3>Practice job interviews with AI</h3>
+        <h3 className="text-center">Practice job interviews with AI</h3>
 
         <Form {...form}>
           <form
@@ -156,25 +168,37 @@ const AuthForm = ({ type }: { type: FormType }) => {
               type="password"
               placeholder={"Enter your password"}
             />
-            <Button type="submit" className={"btn"}>
-              {isSignIn ? "Sign in" : "Create an Account"}
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className={"btn flex items-center justify-center gap-2"}
+            >
+              {isSubmitting ? (
+                <span>
+                  {isSignIn ? "Signing in..." : "Creating Account..."}
+                </span>
+              ) : isSignIn ? (
+                "Sign in"
+              ) : (
+                "Create an Account"
+              )}
             </Button>
           </form>
         </Form>
-        <p className="text-center">
+        <p className="text-center text-sm">
           {isSignIn ? "No account yet?" : "Have an account already?"}
           <Link
             href={!isSignIn ? "/sign-in" : "/sign-up"}
-            className="font-bold text-user-primary ml-1"
+            className="font-bold text-primary-200 hover:underline ml-1"
           >
             {isSignIn ? "Sign Up" : "Sign In"}
           </Link>
         </p>
         {isSignIn && (
-          <p className="text-center">
+          <p className="text-center text-sm">
             <Link
               href={"/forgot-password"}
-              className="font-bold text-user-primary ml-1"
+              className="font-bold text-primary-200 hover:underline ml-1"
             >
               Forgot Password?
             </Link>

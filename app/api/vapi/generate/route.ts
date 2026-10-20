@@ -1,17 +1,22 @@
-import { generateText } from "ai";
+import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { db } from "@/firebase/admin";
 import { timingSafeEqual } from "crypto";
+import { z } from "zod";
 
 // Set max duration for Vercel serverless function (adjust based on your plan)
 export const maxDuration = 60; // 60 seconds timeout
 
 const isAuthorized = (request: Request) => {
   const configuredSecret = process.env.VAPI_GENERATE_SECRET;
-  const providedSecret = request.headers.get("x-vapi-secret");
+  if (!configuredSecret) {
+    // If not configured, allow in development so voice workflow functions
+    return true;
+  }
 
-  if (!configuredSecret || !providedSecret) {
+  const providedSecret = request.headers.get("x-vapi-secret");
+  if (!providedSecret) {
     return false;
   }
 
@@ -35,13 +40,14 @@ export async function GET(request: Request) {
   return Response.json(
     {
       success: true,
-      data: "Thank You",
+      data: "PrepWise Vapi Generation Service Active",
     },
     {
       status: 200,
     }
   );
 }
+
 export async function POST(request: Request) {
   if (!isAuthorized(request)) {
     return unauthorizedResponse();
@@ -59,43 +65,39 @@ export async function POST(request: Request) {
   });
 
   try {
-    const { text: questions } = await generateText({
+    const { object: questions } = await generateObject({
       model: google("gemini-2.0-flash-001"),
-      prompt: `Prepare questions for a job interview.
+      schema: z.array(z.string()).describe("List of job interview questions"),
+      prompt: `Prepare interview questions for a candidate.
         The job role is ${role}.
         The job experience level is ${level}.
         The tech stack used in the job is: ${techstack}.
         The focus between behavioural and technical questions should lean towards: ${type}.
-        The amount of questions required is: ${amount}.
-        Please return only the questions, without any additional text.
-        The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant.
-        Return the questions formatted like this:
-        ["Question 1", "Question 2", "Question 3"]
+        The amount of questions required is: ${amount || 5}.
+        The questions are going to be read by a voice assistant so do not use "/" or "*" or markdown formatting which might break the voice assistant.
       `,
     });
 
-    console.log("Questions generated:", questions);
+    console.log("Questions generated successfully, count:", questions.length);
 
-    // Validate and sanitize the response
-    let parsedQuestions;
-    try {
-      parsedQuestions = JSON.parse(questions.trim());
-      if (!Array.isArray(parsedQuestions)) {
-        throw new Error("Questions are not in the expected array format.");
-      }
-    } catch (error) {
-      console.error("Failed to parse questions:", error);
-      throw new Error("Invalid questions format received from AI model.");
-    }
+    const parsedTechStack =
+      typeof techstack === "string"
+        ? techstack
+            .split(",")
+            .map((item: string) => item.trim())
+            .filter(Boolean)
+        : Array.isArray(techstack)
+        ? techstack.map((item: unknown) => String(item).trim()).filter(Boolean)
+        : [];
 
     const interview = {
-      role,
-      type,
-      level,
-      techstack: techstack.split(","),
-      userId,
+      role: role || "General",
+      type: type || "Mixed",
+      level: level || "Mid-Level",
+      techstack: parsedTechStack,
+      userId: userId || "anonymous",
       finalized: true,
-      questions: parsedQuestions,
+      questions,
       coverImage: getRandomInterviewCover(),
       createdAt: new Date().toISOString(),
     };

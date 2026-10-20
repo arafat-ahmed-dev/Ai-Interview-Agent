@@ -156,37 +156,17 @@ End the conversation on a polite and positive note.
 };
 
 export const feedbackSchema = z.object({
-  totalScore: z.number(),
-  categoryScores: z.tuple([
+  totalScore: z.number().describe("Overall score between 0 and 100"),
+  categoryScores: z.array(
     z.object({
-      name: z.literal("Communication Skills"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-    z.object({
-      name: z.literal("Technical Knowledge"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-    z.object({
-      name: z.literal("Problem Solving"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-    z.object({
-      name: z.literal("Cultural Fit"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-    z.object({
-      name: z.literal("Confidence and Clarity"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-  ]),
-  strengths: z.array(z.string()),
-  areasForImprovement: z.array(z.string()),
-  finalAssessment: z.string(),
+      name: z.string().describe("Category name"),
+      score: z.number().describe("Score between 0 and 100"),
+      comment: z.string().describe("Detailed evaluation feedback for this category"),
+    })
+  ),
+  strengths: z.array(z.string()).describe("Key strengths of the candidate"),
+  areasForImprovement: z.array(z.string()).describe("Actionable improvement points"),
+  finalAssessment: z.string().describe("Comprehensive summary of the candidate's performance"),
 });
 
 export const interviewCovers = [

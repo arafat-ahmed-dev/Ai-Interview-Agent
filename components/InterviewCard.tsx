@@ -11,16 +11,18 @@ import { getFeedbackByInterviewId } from "@/lib/action/general.action";
 const InterviewCard = async ({
   id,
   userId,
+  currentUserId,
   role,
   type,
   techstack,
   createdAt,
 }: InterviewCardProps) => {
+  const targetUserId = currentUserId || userId;
   const feedback =
-    userId && id
+    targetUserId && id
       ? await getFeedbackByInterviewId({
           interviewId: id,
-          userId,
+          userId: targetUserId,
         })
       : null;
 
@@ -91,11 +93,11 @@ const InterviewCard = async ({
         <div className="flex flex-row justify-between">
           <DisplayTechIcons techStack={techstack} />
 
-          <Button className="btn-primary">
+          <Button className="btn-primary" asChild>
             <Link
               href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
             >
-              {feedback ? "Check Feedback" : "View Interview"}
+              {feedback ? "Check Feedback" : "Take Interview"}
             </Link>
           </Button>
         </div>
